@@ -1,0 +1,25 @@
+{
+    "name": "mongoose-app",
+    "version": "1.0.0",
+    "description": "Create Express API using Mongoose and more ...",
+    "main": "app.js",
+    "scripts": {
+        "test": "na",
+        "start": "node app.js",
+        "dev": "nodemon"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@sendgrid/mail": "^8.1.1",
+        "cli": "^1.0.1",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "heroku": "^7.15.2",
+        "mongoose": "^8.2.1",
+        "node": "^20.6.0",
+        "nodemon": "^3.0.1"
+    }
+}
