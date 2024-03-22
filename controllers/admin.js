@@ -13,24 +13,23 @@ router.post('/login', async (req, res) => {
     const { password } = req.body;
     const adminPasswordHash = process.env.ADMIN_PASSWORD;
     const passwordMatch = await bcrypt.compare(password, adminPasswordHash);
-  
+
     if (passwordMatch) {
-      const token = jwt.sign({ user: 'admin' }, process.env.JWT_SECRET, { expiresIn: '8h' });
-      res.json({ token });
-      console.log('success')
+        const token = jwt.sign({ user: 'admin' }, process.env.JWT_SECRET, { expiresIn: '8h' });
+        res.json({ token });
     } else {
-      res.status(401).send('Unauthorized');
+        res.status(401).send('Unauthorized');
     }
-  });
-  
+});
+
 
 //----GET---- get all booking appointments
 router.get("/", (req, res) => {
-    console.log('requested')
-  Booking.find().then((allBookings) => {
-    console.log("All Bookings: ", allBookings);
-    res.json(allBookings);
-  });
+    console.log('Booking list requested')
+    Booking.find().then((allBookings) => {
+        console.log("All Bookings: ", allBookings);
+        res.json(allBookings);
+    });
 });
 
 module.exports = router;
