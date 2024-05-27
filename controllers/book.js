@@ -56,10 +56,11 @@ router.post('/signImage', async (req, res) => {
     res.status(200).json({ signature });
 })
 
-router.get('/designs', async (req, res) => {
+router.get('/designs/:type', async (req, res) => {
+    const { type } = req.params
     let images = []
     cloudinary.v2.search.expression(
-        'folder:test/*' // add your folder
+        `folder:${type}/*` // add your folder
     ).execute()
         .then(results => {
             results.resources.forEach(resource => {
