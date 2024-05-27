@@ -2,14 +2,21 @@ const express = require("express");
 const router = express.Router();
 
 const cloudinary = require("cloudinary")
- 
+
 cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 const { Booking } = require("../models");
+
+cloudinary.config({
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true
+});
 
 //--POST new booking 
 router.post('/new', async (req, res) => {
@@ -23,7 +30,7 @@ router.post('/new', async (req, res) => {
                     message: `${requestedBooking.dateTime} is already booked`,
                 });
             } else {
-                const newBooking = new Booking({...requestedBooking})
+                const newBooking = new Booking({ ...requestedBooking })
                 newBooking
                     .save()
                     .then(createdBooking => {
@@ -43,10 +50,28 @@ router.post('/new', async (req, res) => {
 });
 
 router.post('/signImage', async (req, res) => {
-        const { paramsToSign } = req.body;
-        const signature = cloudinary.utils.api_sign_request(paramsToSign, process.env.CLOUDINARY_API_SECRET);
-        const url = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${paramsToSign.public_id}`;
-        res.status(200).json({ signature });
+    const { paramsToSign } = req.body;
+    const signature = cloudinary.utils.api_sign_request(paramsToSign, process.env.CLOUDINARY_API_SECRET);
+    const url = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${paramsToSign.public_id}`;
+    res.status(200).json({ signature });
+})
+
+router.get('/designs', async (req, res) => {
+    let images = []
+    cloudinary.v2.search.expression(
+        'folder:test/*' // add your folder
+    ).execute()
+        .then(results => {
+            results.resources.forEach(resource => {
+                images.push(resource.url)
+            })
+            console.log('Response: ', images)
+            res.status(200).send(images);
+        })
+        .catch(error => {
+            console.log(error)
+        })
+
 })
 
 module.exports = router;
