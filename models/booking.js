@@ -14,9 +14,10 @@ const bookingInfoSchema = new mongoose.Schema(
 // User schema
 const bookingSchema = new mongoose.Schema(
   {
+    dateTime: Date,
     name: String,
-    date: String,
-    time: String,
+    email: String,
+    phone: String,
     info: [bookingInfoSchema],
   },
   { timestamps: true }
