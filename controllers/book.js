@@ -61,12 +61,13 @@ router.get('/designs/:type', async (req, res) => {
     let images = []
     cloudinary.v2.search.expression(
         `folder:${type}/*` // add your folder
-    ).execute()
+    ).with_field('tags').execute()
         .then(results => {
             results.resources.forEach(resource => {
-                images.push(resource.url)
+                images.push({url: resource.url, tags: resource.tags})
+                console.log('Resource: ', resource.tags)
             })
-            console.log('Response: ', images)
+            console.log('Response: ', images, 'Folder: ', type)
             res.status(200).send(images);
         })
         .catch(error => {
