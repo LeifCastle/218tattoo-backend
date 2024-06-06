@@ -3,10 +3,21 @@ const mongoose = require("mongoose");
 // BuzzList schema (embedded document)
 const bookingInfoSchema = new mongoose.Schema(
   {
-    email: String,
-    size: String,
-    placement: String,
-    comments: String,
+    contact: {
+      name: String,
+      email: String,
+      phone: String,
+    },
+    service: {
+      size: String,
+      placement: String,
+      count: Number,
+      design: String,
+      comments: String,
+      referencePhotos: [String],
+      tattooDesign: String,
+      service: String,
+    }
   },
   { timestamps: true }
 );
@@ -15,10 +26,7 @@ const bookingInfoSchema = new mongoose.Schema(
 const bookingSchema = new mongoose.Schema(
   {
     dateTime: Date,
-    name: String,
-    email: String,
-    phone: String,
-    info: [bookingInfoSchema],
+    info: bookingInfoSchema,
   },
   { timestamps: true }
 );

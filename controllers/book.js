@@ -22,15 +22,21 @@ cloudinary.config({
 router.post('/new', async (req, res) => {
     const requestedBooking = req.body.newBooking;
     console.log('Booking requested for: ', requestedBooking)
-    Booking.findOne({ date: requestedBooking.dateTime })
+    Booking.findOne({ date: requestedBooking.appointment.dateTime })
         .then(foundBooking => {
             if (foundBooking) {
-                console.log(`${requestedBooking.dateTime} is already booked`)
+                console.log(`${requestedBooking.appointment.dateTime} is already booked`)
                 return res.status(401).send({
-                    message: `${requestedBooking.dateTime} is already booked`,
+                    message: `${requestedBooking.appointment.dateTime} is already booked`,
                 });
             } else {
-                const newBooking = new Booking({ ...requestedBooking })
+                const newBooking = new Booking({
+                    dateTime: requestedBooking.appointment.dateTime,
+                    info: {
+                        contact: requestedBooking.contact,
+                        service: requestedBooking.service
+                    }
+                })
                 newBooking
                     .save()
                     .then(createdBooking => {
@@ -64,7 +70,7 @@ router.get('/designs/:type', async (req, res) => {
     ).with_field('tags').execute()
         .then(results => {
             results.resources.forEach(resource => {
-                images.push({url: resource.url, tags: resource.tags})
+                images.push({ url: resource.url, tags: resource.tags })
                 console.log('Resource: ', resource.tags)
             })
             console.log('Response: ', images, 'Folder: ', type)
