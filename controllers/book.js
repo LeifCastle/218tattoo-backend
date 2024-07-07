@@ -56,11 +56,26 @@ router.post('/new', async (req, res) => {
 });
 
 router.post('/signImage', async (req, res) => {
-    const { paramsToSign } = req.body;
-    const signature = cloudinary.utils.api_sign_request(paramsToSign, process.env.CLOUDINARY_API_SECRET);
-    const url = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${paramsToSign.public_id}`;
-    res.status(200).json({ signature });
-})
+    try {
+      const timestamp = Math.round(new Date().getTime() / 1000);
+      const signature = cloudinary.utils.api_sign_request(
+        {
+          timestamp: timestamp,
+        },
+        process.env.CLOUDINARY_API_SECRET
+      );
+  
+      res.status(200).json({
+        timestamp: timestamp,
+        signature: signature,
+      });
+    } catch (error) {
+      console.error('Error signing image:', error);
+      res.status(500).json({ error: 'Failed to sign image' });
+    }
+  });
+
+
 
 router.get('/designs/:type', async (req, res) => {
     const { type } = req.params
