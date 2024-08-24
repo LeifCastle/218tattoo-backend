@@ -10,11 +10,11 @@ const { Booking } = require("../models");
 
 //--Login 
 router.post('/login', async (req, res) => {
-    const { password } = req.body;
+    const { user, password } = req.body;
     const adminPasswordHash = process.env.ADMIN_PASSWORD;
     const passwordMatch = await bcrypt.compare(password, adminPasswordHash);
 
-    if (passwordMatch) {
+    if (passwordMatch && user === "admin") {
         const token = jwt.sign({ user: 'admin' }, process.env.JWT_SECRET, { expiresIn: '8h' });
         res.json({ token });
     } else {
