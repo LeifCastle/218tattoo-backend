@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const bookingInfoSchema = new mongoose.Schema(
   {
     contact: {
-      name: String,
+      firstName: String,
+      lastName: String,
       email: String,
       phone: String,
     },
