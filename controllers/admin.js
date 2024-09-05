@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 const { Booking } = require("../models");
+const mongoose = require('mongoose');
 
 //--Login 
 router.post('/login', async (req, res) => {
@@ -22,8 +23,22 @@ router.post('/login', async (req, res) => {
     }
 });
 
+//----DELETE---- delete a booking appt
+router.post("/cancelBooking", (req, res) => {
+    console.log('Delete booking: ', req.body.id)
+    Booking.findByIdAndDelete(req.body.id)
+        .then((booking) => {
+            console.log('Deleted booking: ', booking); // Check if the booking is found
+            res.status(200).send({message: 'Booking deleted'})
+        })
+        .catch((error) => {
+            console.error('Error deleting booking:', error);
+            res.status(500).send({ message: 'Error deleting booking', error });
+        });
+});
 
-//----GET---- get all booking appointments
+
+//----GET---- get all booking appts
 router.get("/", (req, res) => {
     console.log('Booking list requested')
     Booking.find().then((allBookings) => {
