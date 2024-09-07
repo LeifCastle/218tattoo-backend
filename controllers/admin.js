@@ -40,9 +40,9 @@ router.post("/cancelBooking", (req, res) => {
 
 //----GET---- get all booking appts
 router.get("/", (req, res) => {
-    console.log('Booking list requested')
+    //console.log('Booking list requested')
     Booking.find().then((allBookings) => {
-        console.log("All Bookings: ", allBookings);
+        //console.log("All Bookings: ", allBookings);
         res.json(allBookings);
     });
 });

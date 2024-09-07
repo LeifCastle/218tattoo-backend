@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
-
 const cloudinary = require("cloudinary")
+const { CourierClient } = require("@trycourier/courier");
+const moment = require('moment');
 
-cloudinary.config({
-    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+const courier = new CourierClient({ authorizationToken: process.env.COURIER_API_KEY });
 
 const { Booking } = require("../models");
 
@@ -18,10 +15,39 @@ cloudinary.config({
     secure: true
 });
 
+//--Send email to user after the book an appt
+const sendEmail = async (booking) => {
+    try {
+        const { requestId } = await courier.send({
+            message: {
+                to: {
+                    email: booking.contact.email
+                },
+                content: {
+                    title: `${booking.service.service} Appointment with 218 Tattoo`,
+                    body: `Thank you for booking with us ${booking.contact.firstName}! We look forward to seeing you on ${moment(booking.appointment.dateTime).format('MM/DD')}!  
+                    If you have any questions or need to change your appointment details please contact us at 360-443-1777 or reply to this email.`,
+                },
+                data: {
+                    name: `${booking.contact.firstName} ${booking.contact.lastName}`,
+                },
+                routing: {
+                    method: "single", // Send through the default provider, which is Gmail SMTP
+                    channels: ["email"],
+                },
+            },
+        });
+
+        console.log("Email sent successfully with requestId: ", requestId);
+    } catch (error) {
+        console.error("Error sending email: ", error);
+    }
+};
+
 //--POST new booking 
 router.post('/new', async (req, res) => {
     const requestedBooking = req.body.newBooking;
-    console.log('Booking requested for: ', requestedBooking)
+    //console.log('Booking requested for: ', requestedBooking)
     Booking.findOne({ date: requestedBooking.appointment.dateTime })
         .then(foundBooking => {
             if (foundBooking) {
@@ -40,6 +66,8 @@ router.post('/new', async (req, res) => {
                 newBooking
                     .save()
                     .then(createdBooking => {
+                        console.log('Sending confirmation email to: ', requestedBooking.contact.email)
+                        sendEmail(requestedBooking); //Send appointment confirmation email to user
                         console.log('Creating new Booking: ', createdBooking)
                         return res.json({ booking: createdBooking })
                     })
@@ -57,23 +85,23 @@ router.post('/new', async (req, res) => {
 
 router.post('/signImage', async (req, res) => {
     try {
-      const timestamp = Math.round(new Date().getTime() / 1000);
-      const signature = cloudinary.utils.api_sign_request(
-        {
-          timestamp: timestamp,
-        },
-        process.env.CLOUDINARY_API_SECRET
-      );
-  
-      res.status(200).json({
-        timestamp: timestamp,
-        signature: signature,
-      });
+        const timestamp = Math.round(new Date().getTime() / 1000);
+        const signature = cloudinary.utils.api_sign_request(
+            {
+                timestamp: timestamp,
+            },
+            process.env.CLOUDINARY_API_SECRET
+        );
+
+        res.status(200).json({
+            timestamp: timestamp,
+            signature: signature,
+        });
     } catch (error) {
-      console.error('Error signing image:', error);
-      res.status(500).json({ error: 'Failed to sign image' });
+        console.error('Error signing image:', error);
+        res.status(500).json({ error: 'Failed to sign image' });
     }
-  });
+});
 
 
 
