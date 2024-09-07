@@ -25,7 +25,8 @@ const sendEmail = async (booking) => {
                 },
                 content: {
                     title: `${booking.service.service} Appointment with 218 Tattoo`,
-                    body: `Thank you for booking with us ${booking.contact.firstName}! We look forward to seeing you on ${moment(booking.appointment.dateTime).format('MM/DD')}!  
+                    body: `Thank you for booking with us ${booking.contact.firstName}! We look forward to seeing you on ${moment(booking.appointment.dateTime).format('MM/DD [at] hh:mm A')}  
+                    
                     If you have any questions or need to change your appointment details please contact us at 360-443-1777 or reply to this email.`,
                 },
                 data: {
