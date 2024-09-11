@@ -23,7 +23,7 @@ const sendEmail = async (booking) => {
                 },
                 content: {
                     title: `${booking.info.service.service} Appointment with 218 Tattoo Cancelled`,
-                    body: `${booking.info.contact.firstName} we're sorry to have to cancel your appointment with us on ${moment(booking.dateTime).format('MM/DD [at] hh:mm A')} We hope you'll look into trying our services again soon. 
+                    body: `${booking.info.contact.firstName} we're sorry to have to cancel your appointment with us on ${moment(booking.dateTime).format('MM/DD [at] h:mm A')} We hope you'll look into trying our services again soon. 
                     
                     If you have any questions or would like to rebook with us please contact us at 360-443-1777, reply to this email, or visit our website to rebook.`,
                 },
