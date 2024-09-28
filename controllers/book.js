@@ -48,6 +48,7 @@ const sendEmail = async (booking) => {
 //--POST new booking 
 router.post('/new', async (req, res) => {
     const requestedBooking = req.body.newBooking;
+    console.log('backend log: ', moment(requestedBooking.appointment.dateTime).format('MM/DD [at] h:mm A'))
     //console.log('Booking requested for: ', requestedBooking)
     Booking.findOne({ date: requestedBooking.appointment.dateTime })
         .then(foundBooking => {

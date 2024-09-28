@@ -10,6 +10,7 @@ app.use(cors());
 // Define Controllers
 app.use("/admin", require("./controllers/admin"));
 app.use('/book', require('./controllers/book'))
+app.use('/payment', require('./controllers/payment'))
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
