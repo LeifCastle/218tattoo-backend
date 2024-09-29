@@ -5,22 +5,30 @@ const app = express();
 // middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-// CORS configuration to allow specific origins
+
+const allowedOrigins = [
+  'https://tattoo218-backend-de45108a854b.herokuapp.com',
+  'https://tattoo218-d1912baeabec.herokuapp.com',  // Your production frontend URL
+  'http://localhost:3000',  // Localhost for development
+];
+
+// Enable CORS for specific origins and handle preflight requests
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like Postman or curl requests)
+    // Allow requests with no origin, like mobile apps or curl requests
     if (!origin) return callback(null, true);
-    // If the origin is in the allowed list, allow the request
     if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
+      callback(null, true); // Allow if the origin is in the allowed list
     } else {
-      // If the origin isn't in the allowed list, block the request
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error('Not allowed by CORS')); // Block if not in the allowed list
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Specify allowed HTTP methods
-  credentials: true  // Enable credentials (cookies, etc.)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+  credentials: true,  // Allow cookies or credentials
 }));
+
+// Handle preflight requests for all routes
+app.options('*', cors());
 
 // Define Controllers
 app.use("/admin", require("./controllers/admin"));
