@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_TEST_API_KEY.toString());
+const stripe = new Stripe(process.env.STRIPE_SECRET_TEST_API_KEY);
 
 
 router.post('/create-checkout-session', async (req, res) => {
@@ -18,7 +18,7 @@ router.post('/create-checkout-session', async (req, res) => {
                 quantity: 1,
             }],
             mode: 'payment',
-            return_url: `${process.env.NEXT_BASE_URL}/return.html?session_id={CHECKOUT_SESSION_ID}`,
+            redirect_on_completion: 'never',
             automatic_tax: {
                 enabled: true,
             },
