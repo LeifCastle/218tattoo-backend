@@ -5,7 +5,23 @@ const app = express();
 // middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cors());
+// CORS configuration to allow specific origins
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like Postman or curl requests)
+    if (!origin) return callback(null, true);
+    // If the origin is in the allowed list, allow the request
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      // If the origin isn't in the allowed list, block the request
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Specify allowed HTTP methods
+  credentials: true  // Enable credentials (cookies, etc.)
+}));
+
 // Define Controllers
 app.use("/admin", require("./controllers/admin"));
 app.use('/book', require('./controllers/book'))
