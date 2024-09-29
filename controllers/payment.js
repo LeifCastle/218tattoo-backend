@@ -22,6 +22,7 @@ router.post('/create-checkout-session', async (req, res) => {
             automatic_tax: {
                 enabled: true,
             },
+            //payment_method_types: ['card'], // Specify 'card' as the only payment method
         });
 
         res.json({ clientSecret: session.client_secret });
@@ -89,49 +90,3 @@ module.exports = router
 
 
 
-//ruby convert------------------------------------------------------------------
-
-// const express = require('express');
-// const stripe = require('stripe')('YOUR_STRIPE_SECRET_KEY'); // Replace with your secret key
-
-// const app = express();
-// const YOUR_DOMAIN = 'http://localhost:3000'; // Adjust port if needed, assuming frontend on 3000
-
-// app.use(express.json()); // Parse incoming JSON data
-
-// app.post('/create-checkout-session', async (req, res) => {
-//   try {
-//     const session = await stripe.checkout.sessions.create({
-//       ui_mode: 'embedded',
-//       line_items: [{
-//         price: '{{PRICE_ID}}', // Replace with your actual price ID
-//         quantity: 1,
-//       }],
-//       mode: 'payment',
-//       return_url: `${YOUR_DOMAIN}/return.html?session_id={CHECKOUT_SESSION_ID}`,
-//       automatic_tax: {
-//         enabled: true,
-//       },
-//     });
-
-//     res.json({ clientSecret: session.clientSecret });
-//   } catch (error) {
-//     console.error('Error creating checkout session:', error);
-//     res.status(500).json({ error: 'Failed to create checkout session' });
-//   }
-// });
-
-// app.get('/session-status', async (req, res) => {
-//   const sessionId = req.query.session_id;
-
-//   try {
-//     const session = await stripe.checkout.sessions.retrieve(sessionId);
-//     res.json({ status: session.status, customer_email: session.customer_details.email });
-//   } catch (error) {
-//     console.error('Error retrieving checkout session:', error);
-//     res.status(500).json({ error: 'Failed to retrieve session status' });
-//   }
-// });
-
-// const port = process.env.PORT || 3000; // Use environment variable or default to 3000
-// app.listen(port, () => console.log(`Server listening on port ${port}`));
