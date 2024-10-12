@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-// BuzzList schema (embedded document)
+// Info Schema 
 const bookingInfoSchema = new mongoose.Schema(
   {
     contact: {
@@ -17,8 +17,18 @@ const bookingInfoSchema = new mongoose.Schema(
       comments: String,
       referencePhotos: [String],
       tattooDesign: String,
-      service: String,
+      service: [String],
     }
+  },
+  { timestamps: true }
+);
+
+//Payment Schema
+const paymentSchema = new mongoose.Schema(
+  {
+    total: Number,
+    totalPaid: Number,
+    complete: Boolean,
   },
   { timestamps: true }
 );
@@ -28,6 +38,7 @@ const bookingSchema = new mongoose.Schema(
   {
     dateTime: Date,
     info: bookingInfoSchema,
+    payment: paymentSchema,
   },
   { timestamps: true }
 );

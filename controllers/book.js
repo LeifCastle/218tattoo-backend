@@ -6,7 +6,7 @@ const moment = require('moment');
 
 const courier = new CourierClient({ authorizationToken: process.env.COURIER_API_KEY });
 
-const { Booking } = require("../models");
+const { Booking, Settings } = require("../models");
 
 cloudinary.config({
     cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -63,7 +63,8 @@ router.post('/new', async (req, res) => {
                     info: {
                         contact: requestedBooking.contact,
                         service: requestedBooking.service
-                    }
+                    },
+                    payment: requestedBooking.payment,
                 })
                 newBooking
                     .save()

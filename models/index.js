@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 
 // import all models
 const Booking = require("./booking");
+const Settings = require("./settings");
 
 console.log("mongo uri =>", process.env.MONGO_URI);
 
@@ -32,4 +33,5 @@ db.on("error", (err) => {
 
 module.exports = {
   Booking,
+  Settings,
 };

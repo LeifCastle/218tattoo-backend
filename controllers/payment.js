@@ -13,28 +13,36 @@ router.post('/create-checkout-session', async (req, res) => {
     try {
         const session = await stripe.checkout.sessions.create({
             ui_mode: 'embedded',
-            line_items: [{
-                price: 'price_1Q1YwELeR8KUSkpbrZzZ3umY', // Replace with your actual price ID
-                quantity: 1,
-            }],
+            line_items: [
+                {
+                  price_data: {
+                    currency: 'usd',
+                    product_data: {
+                      name: 'Service Payment',
+                    },
+                    unit_amount: req.body.amount, // The amount should be passed in cents
+                  },
+                  quantity: 1,
+                },
+              ],
             mode: 'payment',
             redirect_on_completion: 'never',
             automatic_tax: {
                 enabled: true,
             },
-            //payment_method_types: ['card'], // Specify 'card' as the only payment method
+            payment_method_types: ['card'], // Specify 'card' as the only payment method
         });
 
-        res.json({ clientSecret: session.client_secret });
+        res.json({ clientSecret: session.client_secret, sessionId: session.id });
     } catch (error) {
         console.error('Error creating checkout session:', error);
         res.status(500).json({ error: 'Failed to create checkout session' });
     }
 });
 
-router.get('/session-status', async (req, res) => {
-    const sessionId = req.query.session_id;
-
+router.post('/session-status', async (req, res) => {
+    const sessionId = req.body.sessionId;
+    console.log('SessionId: ', sessionId)
     try {
         const session = await stripe.checkout.sessions.retrieve(sessionId);
         res.json({ status: session.status, customer_email: session.customer_details.email });
@@ -69,24 +77,3 @@ module.exports = router
 //     throw error;
 //   }
 // };
-
-// // ...
-
-// // In your checkout session creation:
-// const priceId = await createPrice(
-//   // Calculate amount based on user input or other factors
-//   calculatedAmount,
-//   'usd', // Replace with your desired currency
-//   // Product data if applicable
-// );
-
-// const session = await stripe.checkout.sessions.create({
-//   // ... other checkout session options
-//   line_items: [{
-//     price: priceId,
-//     quantity: 1,
-//   }],
-// });
-
-
-
