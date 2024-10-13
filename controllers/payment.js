@@ -5,8 +5,7 @@ const router = express.Router();
 
 
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_TEST_API_KEY);
-
+const stripe = new Stripe(process.env.STRIPE_SECRET_API_KEY);
 
 router.post('/create-checkout-session', async (req, res) => {
     console.log('Checkout session requested')
@@ -57,7 +56,7 @@ router.post('/session-status', async (req, res) => {
 module.exports = router
 
 
-//create price------------------------------------------------------------------
+//create price for down payment------------------------------------------------------------------
 
 // const stripe = require('stripe')('YOUR_STRIPE_SECRET_KEY');
 
