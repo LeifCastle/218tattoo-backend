@@ -20,7 +20,6 @@ const bookingInfoSchema = new mongoose.Schema(
       service: [String],
     }
   },
-  { timestamps: true }
 );
 
 //Payment Schema

@@ -86,6 +86,29 @@ router.post('/new', async (req, res) => {
 
 });
 
+//--PUT booking date/time 
+router.put('/move', async (req, res) => {
+    const requestedBooking = req.body.dateTime
+    console.log('backend log: ', moment(requestedBooking).format('MM/DD [at] h:mm A'))
+    Booking.findOneAndUpdate(
+        { _id: req.body.id }, { dateTime: requestedBooking }, { new: true }  // Return the updated document
+    )
+        .then(updatedBooking => {
+            if (updatedBooking) {
+                console.log('Updated Booking: ', updatedBooking);
+                // sendEmail(updatedBooking.info.contact.email);
+                return res.json({ booking: updatedBooking });
+            } else {
+                return res.status(404).send({ message: 'Booking not found.' });
+            }
+        })
+        .catch(err => {
+            console.log('Error updating booking: ', err);
+            res.status(500).json({ message: 'Error occurred while updating the booking.' });
+        });
+
+});
+
 router.post('/signImage', async (req, res) => {
     try {
         const timestamp = Math.round(new Date().getTime() / 1000);
