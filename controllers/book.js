@@ -110,6 +110,7 @@ router.put('/move', async (req, res) => {
 });
 
 router.post('/signImage', async (req, res) => {
+    console.log('Request to sign image')
     try {
         const timestamp = Math.round(new Date().getTime() / 1000);
         const signature = cloudinary.utils.api_sign_request(
